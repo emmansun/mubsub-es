@@ -1,8 +1,8 @@
 {
-  "name": "@emmansun/mubsub",
+  "name": "mubsub-es",
   "version": "1.0.0",
-  "description": "Pub/sub for Node.js and MongoDB, updated for mongodb 3.0.x by nodebb",
-  "homepage": "https://github.com/NodeBB/mubsub",
+  "description": "Pub/sub for Node.js and MongoDB, updated for mongodb 3.x and fix some deprecated usages by emman sun",
+  "homepage": "https://github.com/emmansun/mubsub",
   "author": "Scott Nelson <scott@scttnlsn.com>",
   "license": "MIT",
   "main": "./lib/index",
