@@ -1,6 +1,6 @@
 {
-  "name": "@nodebb/mubsub",
-  "version": "1.7.1",
+  "name": "@emmansun/mubsub",
+  "version": "1.0.0",
   "description": "Pub/sub for Node.js and MongoDB, updated for mongodb 3.0.x by nodebb",
   "homepage": "https://github.com/NodeBB/mubsub",
   "author": "Scott Nelson <scott@scttnlsn.com>",
@@ -17,6 +17,14 @@
     {
       "name": "Oleg Slobodskoi",
       "email": "oleg008@gmail.com"
+    },
+    {
+      "name": "barisusakli",
+      "email": "baris@nodebb.org"
+    },
+    {
+      "name": "Emman Sun",
+      "email": "tyrone.yimin@gmail.com"
     }
   ],
   "repository": {
@@ -27,7 +35,7 @@
     "mongodb": "^3.6.0"
   },
   "devDependencies": {
-    "mocha": "^2.2.5"
+    "mocha": "^9.1.2"
   },
   "scripts": {
     "test": "mocha test --timeout 10000",
