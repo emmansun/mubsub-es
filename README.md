@@ -3,7 +3,7 @@
 Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's capped collections and tailable cursors to notify subscribers of inserted documents that match a given query.
 
 [![NPM](https://img.shields.io/npm/v/mubsub-es.svg?style=flat)](http://npm.im/mubsub-es)
-[![Build Status](https://img.shields.io/travis/emmansun/mubsub.svg?style=flat)](https://travis-ci.com/emmansun/mubsub)
+[![Run tests](https://github.com/emmansun/mubsub/actions/workflows/ci.yml/badge.svg)](https://github.com/emmansun/mubsub/actions/workflows/ci.yml)
 
 ## Example
 
