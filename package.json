@@ -32,10 +32,10 @@
     "url": "git://github.com/emmansun/mubsub.git"
   },
   "dependencies": {
-    "mongodb": "^4.3.1"
+    "mongodb": "^5.1.0"
   },
   "devDependencies": {
-    "mocha": "^9.1.2"
+    "mocha": "^10.2.0"
   },
   "scripts": {
     "test": "mocha test --timeout 10000 --exit",
