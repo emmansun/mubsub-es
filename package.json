@@ -32,7 +32,7 @@
     "url": "git://github.com/emmansun/mubsub.git"
   },
   "dependencies": {
-    "mongodb": "^5.1.0"
+    "mongodb": "^4.14.0"
   },
   "devDependencies": {
     "mocha": "^10.2.0"
