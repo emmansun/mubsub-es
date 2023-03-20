@@ -35,13 +35,17 @@
     "mongodb": "^5.1.0"
   },
   "devDependencies": {
+    "standard": "^17.0.0",
     "mocha": "^10.2.0"
   },
   "scripts": {
-    "test": "mocha test --timeout 10000 --exit",
+    "test": "standard && mocha test --timeout 10000 --exit",
     "publish": "git push origin && git push origin --tags",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish"
+  },
+  "standard": {
+    "env": [ "mocha" ]
   }
 }
