@@ -3,12 +3,13 @@
 Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's capped collections and tailable cursors to notify subscribers of inserted documents that match a given query. It supports mongodb driver 5.x and mongodb 6.x now.
 
 [![NPM](https://img.shields.io/npm/v/mubsub-es.svg?style=flat)](http://npm.im/mubsub-es)
-[![Run tests](https://github.com/emmansun/mubsub/actions/workflows/ci.yml/badge.svg)](https://github.com/emmansun/mubsub/actions/workflows/ci.yml)
+[![Run tests](https://github.com/emmansun/mubsub-es/actions/workflows/ci.yml/badge.svg)](https://github.com/emmansun/mubsub-es/actions/workflows/ci.yml)
+[![NPM Downloads][npm-downloads-image]][npm-url]
 
 ## Example
 
 ```javascript
-var mubsub = require('mubsub');
+var mubsub = require('mubsub-es');
 
 var client = mubsub('mongodb://localhost:27017/mubsub_example');
 var channel = client.channel('test');
@@ -36,7 +37,7 @@ channel.publish('baz', 'baz');
 You can pass a Db instance or a URI string. For more information about the URI format visit [http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html](http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html)
 
 ```javascript
-var mubsub = require('mubsub');
+var mubsub = require('mubsub-es');
 
 // Using a URI
 var client = mubsub('mongodb://localhost:27017/mubsub_example', [options]);
@@ -131,3 +132,6 @@ You can optionally specify the MongoDB URI to be used for tests:
 ## Projects using mubsub
 
 - [simpleio](https://github.com/kof/simpleio) Simple long polling based communication.
+
+[npm-downloads-image]: https://badgen.net/npm/dm/mubsub-es
+[npm-url]: https://npmjs.org/package/mubsub-es
