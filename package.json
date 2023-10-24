@@ -32,7 +32,7 @@
     "url": "git://github.com/emmansun/mubsub-es.git"
   },
   "dependencies": {
-    "mongodb": "^6.2.0"
+    "mongodb": "^5.9.0"
   },
   "devDependencies": {
     "standard": "^17.1.0",
