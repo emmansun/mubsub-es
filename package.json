@@ -1,6 +1,6 @@
 {
   "name": "mubsub-es",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Pub/sub for Node.js and MongoDB, updated for mongodb 4.x, 5.x, 6.x and fix some deprecated usages by emman sun",
   "homepage": "https://github.com/emmansun/mubsub-es",
   "author": "Scott Nelson <scott@scttnlsn.com>",
@@ -32,10 +32,10 @@
     "url": "git://github.com/emmansun/mubsub-es.git"
   },
   "dependencies": {
-    "mongodb": "^5.1.0"
+    "mongodb": "^6.2.0"
   },
   "devDependencies": {
-    "standard": "^17.0.0",
+    "standard": "^17.1.0",
     "mocha": "^10.2.0"
   },
   "scripts": {
@@ -46,6 +46,8 @@
     "release:major": "npm version major && npm publish"
   },
   "standard": {
-    "env": [ "mocha" ]
+    "env": [
+      "mocha"
+    ]
   }
 }
