@@ -60,7 +60,7 @@ Options:
 
  - `size` max size of the collection in bytes, default is 5mb
  - `max` max amount of documents in the collection
- - `retryInterval` time in ms to wait if no docs are found, default is 200ms
+ - `retryInterval` time in ms to wait if no docs are found, default is 200ms. This options will be used to set **maxAwaitTimeMS** now. Reference [Tailable Cursor Option tailableRetryInterval Ignored](https://jira.mongodb.org/browse/NODE-2358)
  - `recreate` recreate the tailable cursor when an error occurs, default is true
 
 
@@ -85,6 +85,22 @@ channel.publish(event, obj, [callback]);
 
 Publishing a document simply inserts the document into the channel's capped collection.  A callback is optional.
 
+**WARNING**: If you publish events concurrently, when mubsub re-listen the collection, the subscriber will receive some outdated events due to **latest** can't get the record with the max **_id**.
+```javascript
+    const cursor = collection
+        .find(latest ? { _id: latest._id } : {}, { timeout: false })
+        .hint({ $natural: -1 })
+        .limit(1)
+
+    const cursor = collection.find(
+      { _id: { $gt: latest._id } },
+      {
+        tailable: true,
+        awaitData: true,
+        timeout: false,
+        maxAwaitTimeMS: self.options.retryInterval
+      }).hint({ $natural: 1 })        
+```
 ### Listen to events
 
 The following events will be emitted:
