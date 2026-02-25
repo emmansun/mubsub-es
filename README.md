@@ -150,11 +150,11 @@ Closes the MongoDB connection.
 
 ## Tests
 
-    make test
+    npm test
 
 You can optionally specify the MongoDB URI to be used for tests:
 
-    MONGODB_URI=mongodb://localhost:27017/mubsub_tests make test
+    MONGODB_URI=mongodb://localhost:27017/mubsub_tests npm test
 
 ## Projects using mubsub
 
