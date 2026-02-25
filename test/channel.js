@@ -253,4 +253,56 @@ describe('Channel', function () {
       }).catch(done)
     })
   })
+
+  it('does not create ttl index for polling collection by default', function (done) {
+    const channel = this.client.channel('channel.polling.ttl.default', {
+      mode: 'polling',
+      pollInterval: 20
+    })
+
+    channel.once('ready', function (collection) {
+      collection.indexes().then((indexes) => {
+        const ttlIndex = indexes.find((index) => index.name === '_mubsub_poll_ttl')
+        assert.equal(ttlIndex, undefined)
+        channel.close()
+        done()
+      }).catch(done)
+    })
+  })
+
+  it('ignores poll ttl option in capped mode', function (done) {
+    const channel = this.client.channel('channel.capped.ignore.ttl', {
+      mode: 'capped',
+      pollTtlSeconds: 60
+    })
+
+    channel.once('ready', function (collection) {
+      collection.indexes().then((indexes) => {
+        const ttlIndex = indexes.find((index) => index.name === '_mubsub_poll_ttl')
+        assert.equal(ttlIndex, undefined)
+        channel.close()
+        done()
+      }).catch(done)
+    })
+  })
+
+  it('emits error in capped mode if existing collection is not capped', function (done) {
+    const name = 'channel.capped.requires.capped'
+    const self = this
+
+    this.client.once('connect', function (db) {
+      db.createCollection(name).then(() => {
+        const channel = self.client.channel(name, {
+          mode: 'capped'
+        })
+
+        channel.once('error', function (err) {
+          assert.ok(err)
+          assert.ok(String(err.message).toLowerCase().includes('not capped'))
+          channel.close()
+          done()
+        })
+      }).catch(done)
+    })
+  })
 })
