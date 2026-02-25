@@ -1,6 +1,6 @@
 ## mubsub
 
-Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's capped collections and tailable cursors to notify subscribers of inserted documents that match a given query. It supports mongodb driver 6.x and mongodb 7.x now.
+Mubsub is a pub/sub implementation for Node.js and MongoDB. It prefers Mongo's capped collections and tailable cursors when available, and can fallback to polling on normal collections for Mongo-compatible backends that do not support capped/tailable behavior (for example, AWS DocumentDB). It supports mongodb driver 6.x and mongodb 7.x now.
 
 [![NPM](https://img.shields.io/npm/v/mubsub-es.svg?style=flat)](http://npm.im/mubsub-es)
 [![Run tests](https://github.com/emmansun/mubsub-es/actions/workflows/ci.yml/badge.svg)](https://github.com/emmansun/mubsub-es/actions/workflows/ci.yml)
@@ -48,7 +48,7 @@ var client = mubsub(new Db(...));
 
 ### Channels
 
-A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection and/or the max number of documents in the collection when creating a channel.
+A channel maps one-to-one with a collection. In `auto` mode (default), Mubsub first tries a capped collection + tailable cursor. If capped/tailable is unavailable, Mubsub falls back to polling a normal collection.
 
 **WARNING**: You should not create lots of channels because Mubsub will poll from the cursor position.
 
@@ -60,8 +60,17 @@ Options:
 
  - `size` max size of the collection in bytes, default is 5mb
  - `max` max amount of documents in the collection
- - `retryInterval` time in ms to wait if no docs are found, default is 200ms. This options will be used to set **maxAwaitTimeMS** now. Reference [Tailable Cursor Option tailableRetryInterval Ignored](https://jira.mongodb.org/browse/NODE-2358)
+ - `mode` transport mode: `auto` | `capped` | `polling`, default is `auto`
+ - `retryInterval` time in ms to wait if no docs are found in capped mode, default is 200ms. This options will be used to set **maxAwaitTimeMS** now. Reference [Tailable Cursor Option tailableRetryInterval Ignored](https://jira.mongodb.org/browse/NODE-2358)
+ - `pollInterval` time in ms between polling cycles in polling mode, default is 1000ms
+ - `pollTtlSeconds` optional retention TTL (seconds) for polling collections. If set to a positive value, old documents are automatically expired using a TTL index
  - `recreate` recreate the tailable cursor when an error occurs, default is true
+
+Mode notes:
+
+- `auto`: try capped+tailable first, fallback to polling if unsupported
+- `capped`: force capped+tailable and emit error if unavailable
+- `polling`: force polling transport on a normal collection
 
 
 **WARNING**: Don't remove collections with running publishers. It's possible for `mongod` to recreate the collection on the next insert (before Mubsub has the chance to do so).  If this happens the collection will be recreated as a normal, uncapped collection.
@@ -84,6 +93,8 @@ channel.publish(event, obj, [callback]);
 ```
 
 Publishing a document simply inserts the document into the channel's capped collection.  A callback is optional.
+
+In polling mode, documents are inserted into a normal collection. If `pollTtlSeconds` is configured, Mubsub creates a TTL index and old documents are cleaned up automatically.
 
 **WARNING**: If you publish events concurrently, when mubsub re-listen the collection, the subscriber will receive some outdated events due to **latest** can't get the record with the max **_id**.
 ```javascript

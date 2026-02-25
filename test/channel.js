@@ -168,4 +168,89 @@ describe('Channel', function () {
       channel.publish('a', data)
     }
   })
+
+  it('supports polling mode publish and subscribe', function (done) {
+    const channel = this.client.channel('channel.polling.basic', {
+      mode: 'polling',
+      pollInterval: 20
+    })
+
+    const subscription = channel.subscribe('a', function (payload) {
+      assert.equal(payload, 'polling')
+      subscription.unsubscribe()
+      channel.close()
+      done()
+    })
+
+    channel.publish('a', 'polling')
+  })
+
+  it('does not replay history in polling mode', function (done) {
+    const name = 'channel.polling.nohistory'
+    const channel0 = this.client.channel(name, {
+      mode: 'polling',
+      pollInterval: 20
+    })
+
+    channel0.publish('evt', 'old', function (err) {
+      if (err) return done(err)
+
+      const client1 = mubsub(helpers.uri)
+      const channel1 = client1.channel(name, {
+        mode: 'polling',
+        pollInterval: 20
+      })
+
+      const subscription = channel1.subscribe('evt', function (data) {
+        subscription.unsubscribe()
+        assert.equal(data, 'new')
+        channel0.close()
+        channel1.close()
+        client1.close(done)
+      })
+
+      channel1.publish('evt', 'new')
+    })
+  })
+
+  it('falls back to polling in auto mode on uncapped collections', function (done) {
+    const name = 'channel.auto.fallback'
+    const self = this
+
+    this.client.once('connect', function (db) {
+      db.createCollection(name).then(() => {
+        const channel = self.client.channel(name, {
+          mode: 'auto',
+          pollInterval: 20
+        })
+
+        const subscription = channel.subscribe('f', function (payload) {
+          assert.equal(payload, 'ok')
+          subscription.unsubscribe()
+          channel.close()
+          done()
+        })
+
+        channel.publish('f', 'ok')
+      }).catch(done)
+    })
+  })
+
+  it('creates ttl index for polling collection when configured', function (done) {
+    const channel = this.client.channel('channel.polling.ttl', {
+      mode: 'polling',
+      pollInterval: 20,
+      pollTtlSeconds: 60
+    })
+
+    channel.once('ready', function (collection) {
+      collection.indexes().then((indexes) => {
+        const ttlIndex = indexes.find((index) => index.name === '_mubsub_poll_ttl')
+        assert.ok(ttlIndex)
+        assert.equal(ttlIndex.expireAfterSeconds, 60)
+        channel.close()
+        done()
+      }).catch(done)
+    })
+  })
 })
