@@ -1,6 +1,6 @@
 ## mubsub
 
-Mubsub is a pub/sub implementation for Node.js and MongoDB. It prefers Mongo's capped collections and tailable cursors when available, and can fallback to polling on normal collections for Mongo-compatible backends that do not support capped/tailable behavior (for example, AWS DocumentDB). It supports MongoDB server versions 4.x through 9.x and uses the MongoDB Node.js driver 6.x.
+Mubsub is a pub/sub implementation for Node.js and MongoDB. It prefers Mongo's capped collections and tailable cursors when available, and can fallback to polling on normal collections for Mongo-compatible backends that do not support capped/tailable behavior (for example, AWS DocumentDB). It supports MongoDB server versions 4.x through 9.x and MongoDB Node.js driver versions 6.20.x and 7.7.x.
 
 [![NPM](https://img.shields.io/npm/v/mubsub-es.svg?style=flat)](http://npm.im/mubsub-es)
 [![Run tests](https://github.com/emmansun/mubsub-es/actions/workflows/ci.yml/badge.svg)](https://github.com/emmansun/mubsub-es/actions/workflows/ci.yml)
