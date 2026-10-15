@@ -4,12 +4,24 @@ on: [push]
 
 jobs:
   build:
+    name: Node ${{ matrix.node-version }} / MongoDB ${{ matrix.mongodb-version }} / driver ${{ matrix.mongodb-driver-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [22.x, 24.x, 26.x]
         mongodb-version: ['6.0', '7.0', '8.0', '9.0']
         mongodb-driver-version: ['6.20.0', '7.7.0']
+
+    services:
+      mongodb:
+        image: mongo:${{ matrix.mongodb-version }}
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
     - name: Git checkout
@@ -20,13 +32,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Start MongoDB
-      uses: supercharge/mongodb-github-action@1.12.1
-      with:
-        mongodb-version: ${{ matrix.mongodb-version }}
+    - name: Install MongoDB driver ${{ matrix.mongodb-driver-version }}
+      run: npm install --no-save --package-lock=false mongodb@${{ matrix.mongodb-driver-version }}
 
-    - run: npm install --no-save --package-lock=false mongodb@${{ matrix.mongodb-driver-version }}
-
-    - run: npm test
+    - name: Test with MongoDB ${{ matrix.mongodb-version }} and driver ${{ matrix.mongodb-driver-version }}
+      run: npm test
       env:
         CI: true
